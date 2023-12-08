@@ -1,0 +1,219 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class Board {
+  + Board(Game): 
+  - scaled_size: int
+  - empty: Image
+  - game: Game
+  - tile_size: int
+  - ranger: Image
+  - wall: Image
+  - basket: Image
+  - scale: double
+  - player: Image
+  # paintComponent(Graphics): void
+  + setScale(double): boolean
+  + refresh(): boolean
+}
+enum CellItem << enumeration >> {
+  - CellItem(char): 
+  + WALL: 
+  + H_RANGER: 
+  + representation: char
+  + EMPTY: 
+  + V_RANGER: 
+  + BASKET: 
+  + values(): CellItem[]
+  + valueOf(String): CellItem
+}
+class Database {
+  + Database(int): 
+  - tableName: String
+  - insertStatement: PreparedStatement
+  - deleteStatement: PreparedStatement
+  - maxScores: int
+  - conn: Connection
+  - highScores: List<HighScore>
+  + insertScore(String, String, int): void
+  + putHighScore(String, String, int): void
+  + getHighScores(): List<HighScore>
+  + deleteScore(int): void
+  - loadHighScores(): void
+}
+enum Direction << enumeration >> {
+  - Direction(int, int): 
+  + RIGHT: 
+  + UP: 
+  + y: int
+  + LEFT: 
+  + DOWN: 
+  + x: int
+  + values(): Direction[]
+  + valueOf(String): Direction
+}
+class EditDlg {
+  + EditDlg(JFrame, String): 
+  - edit: JTextField
+  + getValue(): String
+  # processOK(): boolean
+  # processCancel(): void
+}
+class Game {
+  + Game(): 
+  - gameLevelDatabase: HashMap<String, GameLevel>
+  - currentGameLevel: GameLevel
+  - gameIDIter: Iterator<String>
+  + lives: int
+  - timer: int
+  - database: Database
+  - isBetterHighScore: boolean
+  + getElapsedTime(): int
+  + getPlayerPosition(): Position
+  + isLevelLoaded(): boolean
+  + getLevelColNumber(): int
+  + loadGame(): void
+  + getItem(int, int): CellItem
+  + printGameLevel(): void
+  + getRangers(): List<Ranger>
+  + isAlive(): boolean
+  + isGameEnded(): boolean
+  + calculateScore(): int
+  + getHighScores(): List<HighScore>
+  - readNextLine(Scanner): String
+  + roamRangers(): void
+  - readGameID(String): String?
+  - readMaps(): void
+  + saveScore(String): void
+  + loadGame(String): void
+  + isBetterHighScore(): boolean
+  + step(Direction): boolean
+  + resetGameIDIter(): void
+  + getLives(): int
+  + getLevelRowNumber(): int
+  + getGameID(): String
+  + getLevelsOfDifficulty(): Collection<String>
+  + getCollectedBasket(): int
+  + isAllEnded(): boolean
+  + getOverallTime(): int
+}
+class GameLevel {
+  + GameLevel(GameLevel): 
+  + GameLevel(List<String>, String): 
+  + level: CellItem[][]
+  + gameID: String
+  + player: Position
+  - numBaskets: int
+  + totalRow: int
+  - elapsedTime: int
+  - originalPlayerPosition: Position
+  + totalCol: int
+  + rangers: List<Ranger>
+  - collectedBasket: int
+  + isCollided(): boolean
+  + getElapsedTime(): int
+  + isValidPosition(Position): boolean
+  + collided(Game): void
+  + printLevel(): void
+  + isCollided(Position): boolean
+  + moveRanger(Game): void
+  + isGameEnded(): boolean
+  + movePlayer(Direction, Game): boolean
+  + getNumBasket(): int
+  + getCollectedBasket(): int
+}
+class HighScore {
+  + HighScore(String, String, int): 
+  + level: String
+  + score: int
+  + name: String
+  + toString(): String
+  + hashCode(): int
+  + equals(Object): boolean
+}
+class HighScoreTableModel {
+  + HighScoreTableModel(List<HighScore>): 
+  - highScores: List<HighScore>
+  - colName: String[]
+  + getColumnCount(): int
+  + getColumnName(int): String
+  + getRowCount(): int
+  + getValueAt(int, int): Object
+}
+class HighScoreWindow {
+  + HighScoreWindow(List<HighScore>, JFrame): 
+  - table: JTable
+}
+class Main {
+  + Main(): 
+  + main(String[]): void
+}
+class MainWindow {
+  + MainWindow(): 
+  - elapsedTimer: Timer
+  - elapsedTimeLabel: JLabel
+  - overallTimerLabel: JLabel
+  - livesLabel: JLabel
+  - collectedBasketLabel: JLabel
+  - rangerTimer: Timer
+  - game: Game
+  - board: Board
+  - prompt(String, String, boolean): void
+  - refreshGameStatLabel(): void
+  - createScaleMenuItems(JMenu, double, double, double): void
+  - askForNameAndStore(): void
+  - createGameLevelMenuItems(JMenu): void
+  - deadAction(): void
+}
+class OKCancelDialog {
+  # OKCancelDialog(JFrame, String): 
+  + OK: int
+  # btnCancel: JButton
+  - actionCancel: AbstractAction
+  # btnPanel: JPanel
+  + CANCEL: int
+  # btnCode: int
+  # btnOK: JButton
+  - actionOK: AbstractAction
+  + getButtonCode(): int
+  # processOK(): boolean
+  # processCancel(): void
+}
+class Position {
+  + Position(int, int): 
+  + Position(Position): 
+  + x: int
+  + y: int
+  + translate(Direction): Position
+}
+class Ranger {
+  + Ranger(Axis, Position): 
+  - axis: Axis
+  + isGoingLEFTorUP: boolean
+  - position: Position
+  + getDirection(): Axis
+  + setPosition(Position): void
+  + getPosition(): Position
+}
+class ResourceLoader {
+  + ResourceLoader(): 
+  + loadImage(String): Image
+  + loadResource(String): InputStream
+}
+
+Board               "1" *-[#595959,plain]-> "game\n1" Game                
+Database            "1" *-[#595959,plain]-> "highScores\n*" HighScore           
+EditDlg              -[#000082,plain]-^  OKCancelDialog      
+Game                "1" *-[#595959,plain]-> "database\n1" Database            
+Game                "1" *-[#595959,plain]-> "gameLevelDatabase\n*" GameLevel           
+GameLevel           "1" *-[#595959,plain]-> "level\n*" CellItem            
+GameLevel           "1" *-[#595959,plain]-> "player\n1" Position            
+GameLevel           "1" *-[#595959,plain]-> "rangers\n*" Ranger              
+HighScoreTableModel "1" *-[#595959,plain]-> "highScores\n*" HighScore           
+MainWindow          "1" *-[#595959,plain]-> "board\n1" Board               
+MainWindow          "1" *-[#595959,plain]-> "game\n1" Game                
+Ranger              "1" *-[#595959,plain]-> "position\n1" Position            
+@enduml

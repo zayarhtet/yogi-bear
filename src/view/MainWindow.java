@@ -56,7 +56,7 @@ public class MainWindow extends JFrame {
 
         menuGame.add(menuGameLevel);
         menuGame.add(menuGameScale);
-       menuGame.add(menuScoreBoard);
+        menuGame.add(menuScoreBoard);
         menuGame.addSeparator();
         menuGame.add(menuGameExit);
         menuBar.add(menuGame);
@@ -122,7 +122,7 @@ public class MainWindow extends JFrame {
             }
         });
 
-        rangerTimer = new Timer(600, new ActionListener() {
+        rangerTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (game.isLevelLoaded()) {

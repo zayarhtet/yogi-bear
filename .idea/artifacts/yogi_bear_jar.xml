@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="yogi-bear:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/yogi_bear_jar</output-path>
-    <root id="archive" name="yogi-bear.jar">
-      <element id="module-output" name="yogi-bear" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../../../../../../Program Files/Java/mysql-connector-java-8.0.19.jar" path-in-jar="/" />
-    </root>
-  </artifact>
-</component>
